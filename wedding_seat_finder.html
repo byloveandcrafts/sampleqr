@@ -1,0 +1,611 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+
+  :root {
+    --sage: #7a9e7e;
+    --sage-light: #b8d4bc;
+    --sage-pale: #e8f0e9;
+    --sage-dark: #4a6b4e;
+    --cream: #faf8f4;
+    --cream-warm: #f5f0e8;
+    --gold: #c9a96e;
+    --gold-light: #e8d9b8;
+    --charcoal: #3a3a3a;
+    --muted: #7a7a7a;
+    --border: rgba(122, 158, 126, 0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  #app {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .hero {
+    background: linear-gradient(170deg, #e8f0e9 0%, #f5f0e8 60%, #fff 100%);
+    padding: 3rem 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px; right: -40px;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--sage-light) 0, var(--sage-light) 8px, transparent 8px, transparent 16px);
+  }
+
+  .leaf-dec {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+
+  .leaf-dec span {
+    font-size: 18px;
+    color: var(--sage-dark);
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 7vw, 3.2rem);
+    font-weight: 300;
+    color: var(--charcoal);
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--sage-dark);
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(0.95rem, 3vw, 1.15rem);
+    font-weight: 300;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 1.5rem auto;
+    max-width: 280px;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 0.5px;
+    background: var(--sage-light);
+  }
+
+  .divider-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--sage);
+  }
+
+  .search-section {
+    padding: 2rem 1.5rem;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .search-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--sage-dark);
+    display: block;
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+
+  .search-wrap {
+    position: relative;
+    display: flex;
+    gap: 10px;
+  }
+
+  .search-wrap input {
+    flex: 1;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    padding: 14px 18px;
+    border: 1px solid var(--sage-light);
+    border-radius: 4px;
+    background: white;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-wrap input:focus {
+    border-color: var(--sage);
+  }
+
+  .search-wrap input::placeholder {
+    color: #bbb;
+    font-weight: 300;
+  }
+
+  .search-btn {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 22px;
+    background: var(--sage);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .search-btn:hover { background: var(--sage-dark); }
+
+  .results-area {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+    min-height: 200px;
+  }
+
+  .result-card {
+    background: white;
+    border: 1px solid var(--sage-light);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.35s ease forwards;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  @keyframes slideUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--sage);
+  }
+
+  .result-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 0.6rem;
+  }
+
+  .result-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 0.75rem;
+  }
+
+  .info-chip {
+    background: var(--sage-pale);
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+
+  .info-chip-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    margin-bottom: 2px;
+  }
+
+  .info-chip-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--charcoal);
+  }
+
+  .badge-meal {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 400;
+    margin-top: 0.5rem;
+  }
+
+  .badge-chicken { background: #fdf3e3; color: #9a6d2a; border: 1px solid #e8d4a0; }
+  .badge-fish { background: #e8f0f8; color: #2a5a7a; border: 1px solid #a0c4d8; }
+  .badge-veg { background: #eaf3e8; color: #3a6a3a; border: 1px solid #a8c8a8; }
+  .badge-beef { background: #f5eaea; color: #7a3a3a; border: 1px solid #d4a8a8; }
+
+  .no-result {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+
+  .no-result p:first-child {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    color: var(--charcoal);
+  }
+
+  .no-result p:last-child {
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+
+  .suggestion-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .suggestion-chip {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    background: var(--sage-pale);
+    color: var(--sage-dark);
+    border: 1px solid var(--sage-light);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    letter-spacing: 0.03em;
+  }
+
+  .suggestion-chip:hover { background: var(--sage-light); }
+
+  .browse-section {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 1.5rem 1rem;
+  }
+
+  .browse-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+  }
+
+  .table-btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    padding: 10px 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--charcoal);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .table-btn:hover {
+    background: var(--sage-pale);
+    border-color: var(--sage-light);
+  }
+
+  .table-btn.active {
+    background: var(--sage-pale);
+    border-color: var(--sage);
+    color: var(--sage-dark);
+  }
+
+  .table-guests {
+    margin-top: 1.5rem;
+  }
+
+  .table-guests-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .guest-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--border);
+    animation: slideUp 0.25s ease forwards;
+    opacity: 0;
+  }
+
+  .guest-row-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    color: var(--charcoal);
+  }
+
+  .guest-row-seat {
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
+  .tabs {
+    display: flex;
+    max-width: 520px;
+    margin: 0 auto 1.5rem;
+    padding: 0 1.5rem;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+  }
+
+  .tab.active {
+    color: var(--sage-dark);
+    border-bottom-color: var(--sage);
+  }
+
+  .footer-note {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+</style>
+
+<div id="app">
+  <div class="hero">
+    <div class="leaf-dec">
+      <span>✦</span>
+      <span>✦</span>
+      <span>✦</span>
+    </div>
+    <h1>Isabella <em>&</em> Raphael</h1>
+    <p class="hero-sub">September 14, 2025 &nbsp;·&nbsp; Find Your Seat</p>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-dot"></div>
+      <div class="divider-line"></div>
+    </div>
+  </div>
+
+  <div style="max-width:520px;margin:0 auto;padding:0 1.5rem 1rem;">
+    <div class="tabs" style="padding:0;max-width:100%;margin:0 0 1.5rem;">
+      <button class="tab active" id="tab-search" onclick="switchTab('search')">Search Guest</button>
+      <button class="tab" id="tab-browse" onclick="switchTab('browse')">Browse Tables</button>
+    </div>
+  </div>
+
+  <div id="pane-search">
+    <div class="search-section" style="padding-top:0">
+      <label class="search-label">Enter your name to find your table</label>
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="e.g. Sofia, Reyes, Del Rosario…" oninput="onSearch(this.value)" />
+        <button class="search-btn" onclick="doSearch()">Find</button>
+      </div>
+    </div>
+    <div class="results-area" id="resultsArea">
+      <div style="text-align:center;padding:1.5rem 1rem;">
+        <div class="suggestion-chips" id="suggestionChips"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-browse" style="display:none">
+    <div class="browse-section">
+      <p class="browse-label">Select a table to view guests</p>
+      <div class="table-grid" id="tableGrid"></div>
+      <div class="table-guests" id="tableGuests" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Please speak with an usher if you have any questions ♡
+  </div>
+</div>
+
+<script>
+const guests = [
+  {name:"Sofia Reyes",table:"Magnolia",seat:"1",meal:"chicken"},
+  {name:"Marco Reyes",table:"Magnolia",seat:"2",meal:"beef"},
+  {name:"Lucia Santos",table:"Magnolia",seat:"3",meal:"fish"},
+  {name:"Diego Santos",table:"Magnolia",seat:"4",meal:"chicken"},
+  {name:"Elena Villanueva",table:"Magnolia",seat:"5",meal:"veg"},
+  {name:"Carlos Villanueva",table:"Magnolia",seat:"6",meal:"beef"},
+  {name:"Isabel Cruz",table:"Magnolia",seat:"7",meal:"chicken"},
+  {name:"Rafael Cruz",table:"Magnolia",seat:"8",meal:"fish"},
+
+  {name:"Camila Torres",table:"Jasmine",seat:"1",meal:"veg"},
+  {name:"Andrés Torres",table:"Jasmine",seat:"2",meal:"beef"},
+  {name:"Valentina Lima",table:"Jasmine",seat:"3",meal:"chicken"},
+  {name:"Mateo Lima",table:"Jasmine",seat:"4",meal:"fish"},
+  {name:"Gabriela Morales",table:"Jasmine",seat:"5",meal:"chicken"},
+  {name:"Sebastián Morales",table:"Jasmine",seat:"6",meal:"beef"},
+  {name:"Daniela Fuentes",table:"Jasmine",seat:"7",meal:"veg"},
+  {name:"Nicolás Fuentes",table:"Jasmine",seat:"8",meal:"chicken"},
+
+  {name:"Renata Ocampo",table:"Gardenia",seat:"1",meal:"fish"},
+  {name:"Emilio Ocampo",table:"Gardenia",seat:"2",meal:"beef"},
+  {name:"Natalia Rios",table:"Gardenia",seat:"3",meal:"chicken"},
+  {name:"Tomás Rios",table:"Gardenia",seat:"4",meal:"veg"},
+  {name:"Alejandra Peña",table:"Gardenia",seat:"5",meal:"chicken"},
+  {name:"Felipe Peña",table:"Gardenia",seat:"6",meal:"fish"},
+  {name:"Adriana Vargas",table:"Gardenia",seat:"7",meal:"beef"},
+  {name:"Roberto Vargas",table:"Gardenia",seat:"8",meal:"chicken"},
+
+  {name:"Fernanda Aguilar",table:"Wisteria",seat:"1",meal:"veg"},
+  {name:"Javier Aguilar",table:"Wisteria",seat:"2",meal:"chicken"},
+  {name:"Paola Castillo",table:"Wisteria",seat:"3",meal:"beef"},
+  {name:"Ricardo Castillo",table:"Wisteria",seat:"4",meal:"fish"},
+  {name:"Claudia Medina",table:"Wisteria",seat:"5",meal:"chicken"},
+  {name:"Óscar Medina",table:"Wisteria",seat:"6",meal:"veg"},
+  {name:"Verónica Guzmán",table:"Wisteria",seat:"7",meal:"fish"},
+  {name:"Héctor Guzmán",table:"Wisteria",seat:"8",meal:"beef"},
+
+  {name:"Lorena Delgado",table:"Lavender",seat:"1",meal:"chicken"},
+  {name:"Arturo Delgado",table:"Lavender",seat:"2",meal:"beef"},
+  {name:"Esperanza Flores",table:"Lavender",seat:"3",meal:"veg"},
+  {name:"César Flores",table:"Lavender",seat:"4",meal:"chicken"},
+  {name:"Mariana Herrera",table:"Lavender",seat:"5",meal:"fish"},
+  {name:"Hugo Herrera",table:"Lavender",seat:"6",meal:"chicken"},
+  {name:"Beatriz Paredes",table:"Lavender",seat:"7",meal:"beef"},
+  {name:"Eduardo Paredes",table:"Lavender",seat:"8",meal:"veg"},
+
+  {name:"Silvia Ramos",table:"Peony",seat:"1",meal:"chicken"},
+  {name:"Ignacio Ramos",table:"Peony",seat:"2",meal:"fish"},
+  {name:"Teresa Vega",table:"Peony",seat:"3",meal:"beef"},
+  {name:"Guillermo Vega",table:"Peony",seat:"4",meal:"chicken"},
+  {name:"Patricia Mendoza",table:"Peony",seat:"5",meal:"veg"},
+  {name:"Ernesto Mendoza",table:"Peony",seat:"6",meal:"chicken"},
+  {name:"Carmen Jiménez",table:"Peony",seat:"7",meal:"fish"},
+  {name:"Alfonso Jiménez",table:"Peony",seat:"8",meal:"beef"},
+];
+
+const tables = [...new Set(guests.map(g => g.table))];
+const meals = {chicken:'🍗 Chicken',fish:'🐟 Fish',veg:'🌿 Vegetarian',beef:'🥩 Beef'};
+const mealClass = {chicken:'badge-chicken',fish:'badge-fish',veg:'badge-veg',beef:'badge-beef'};
+
+function switchTab(t) {
+  document.getElementById('pane-search').style.display = t==='search'?'':'none';
+  document.getElementById('pane-browse').style.display = t==='browse'?'':'none';
+  document.getElementById('tab-search').className = 'tab'+(t==='search'?' active':'');
+  document.getElementById('tab-browse').className = 'tab'+(t==='browse'?' active':'');
+  if(t==='browse') renderTableGrid();
+}
+
+function renderTableGrid() {
+  const grid = document.getElementById('tableGrid');
+  grid.innerHTML = tables.map(t =>
+    `<button class="table-btn" onclick="showTableGuests('${t}',this)">${t}</button>`
+  ).join('');
+}
+
+function showTableGuests(tName, btn) {
+  document.querySelectorAll('.table-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const area = document.getElementById('tableGuests');
+  const list = guests.filter(g=>g.table===tName);
+  area.style.display='';
+  area.innerHTML = `<div class="table-guests-title">Table ${tName}</div>` +
+    list.map((g,i) => `<div class="guest-row" style="animation-delay:${i*40}ms">
+      <span class="guest-row-name">${g.name}</span>
+      <span class="guest-row-seat">Seat ${g.seat} &nbsp;·&nbsp; ${meals[g.meal]}</span>
+    </div>`).join('');
+}
+
+function buildSuggestions() {
+  const chips = document.getElementById('suggestionChips');
+  const samples = ['Sofia','Camila','Elena','Renata','Fernanda','Lorena'];
+  chips.innerHTML = `<p style="width:100%;font-size:0.8rem;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px;font-family:'Jost',sans-serif;">Try searching</p>` +
+    samples.map(n => `<span class="suggestion-chip" onclick="quickSearch('${n}')">${n}</span>`).join('');
+}
+
+function quickSearch(name) {
+  document.getElementById('searchInput').value = name;
+  doSearch();
+}
+
+function onSearch(val) {
+  if(val.length >= 2) doSearch(); 
+  else if(val.length === 0) {
+    document.getElementById('resultsArea').innerHTML = `<div style="text-align:center;padding:1.5rem 1rem;"><div class="suggestion-chips" id="suggestionChips"></div></div>`;
+    buildSuggestions();
+  }
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const area = document.getElementById('resultsArea');
+  if(!q) {
+    area.innerHTML = '';
+    return;
+  }
+  const found = guests.filter(g => g.name.toLowerCase().includes(q));
+  if(!found.length) {
+    area.innerHTML = `<div class="no-result">
+      <p>No guest found</p>
+      <p>Please check your spelling or ask an usher for assistance</p>
+    </div>`;
+    return;
+  }
+  area.innerHTML = found.map((g,i) => `
+    <div class="result-card" style="animation-delay:${i*60}ms">
+      <div class="result-name">${g.name}</div>
+      <span class="badge-meal ${mealClass[g.meal]}">${meals[g.meal]}</span>
+      <div class="result-info">
+        <div class="info-chip">
+          <div class="info-chip-label">Table</div>
+          <div class="info-chip-value">${g.table}</div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-label">Seat</div>
+          <div class="info-chip-value">No. ${g.seat}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+buildSuggestions();
+</script>
